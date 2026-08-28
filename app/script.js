@@ -26,7 +26,14 @@ document.getElementById("regForm").addEventListener("submit", function (e) {
         msg.className = "success";
         form.reset();
       } else {
-        msg.textContent = "Something went wrong. Please try again.";
+        if (data.message) {
+          msg.textContent = data.message;
+        } else if (data.errors) {
+          msg.textContent = data.errors.join(", ");
+        } else {
+          msg.textContent = "Something went wrong. Please try again.";
+        }
+
         msg.className = "error";
       }
     }
