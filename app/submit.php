@@ -50,10 +50,14 @@ mysqli_stmt_bind_param(
     $seats
 );
 
-mysqli_stmt_execute($stmt);
-mysqli_stmt_close($stmt);
+if (mysqli_stmt_execute($stmt)) {
+    $response['success'] = true;
+    $response['message'] = 'Registration successful!';
+} else {
+    $response['success'] = false;
+    $response['message'] = 'Database error. Registration failed.';
+}
 
-$response['success'] = true;
-$response['message'] = 'Registration successful!';
+mysqli_stmt_close($stmt);
 
 echo json_encode($response);
