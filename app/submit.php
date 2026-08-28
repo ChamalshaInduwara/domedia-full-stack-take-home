@@ -21,24 +21,37 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'A valid email is required';
 }
 
-if ($seats > 0 || $seats <= 10) {
-    // seats are within the allowed range
-} else {
+if ($seats < 1 || $seats > 10) {
     $errors[] = 'Seats must be between 1 and 10';
 }
 
 if (count($errors) > 0) {
     $response['success'] = false;
-    $response['errors']  = $errors;
+    $response['errors'] = $errors;
+
     echo json_encode($response);
     exit;
 }
 
-// Save the registration
-$sql = "INSERT INTO registrations (workshop_id, full_name, email, phone, seats)
-        VALUES ('$workshop_id', '$name', '$email', '$phone', '$seats')";
+// Save the registration using a prepared statement
+$stmt = mysqli_prepare(
+    $conn,
+    "INSERT INTO registrations (workshop_id, full_name, email, phone, seats)
+     VALUES (?, ?, ?, ?, ?)"
+);
 
-mysqli_query($conn, $sql);
+mysqli_stmt_bind_param(
+    $stmt,
+    "isssi",
+    $workshop_id,
+    $name,
+    $email,
+    $phone,
+    $seats
+);
+
+mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
 
 $response['success'] = true;
 $response['message'] = 'Registration successful!';
