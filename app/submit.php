@@ -6,7 +6,7 @@ $response = array();
 // Collect the submitted values
 $name        = $_POST['name'];
 $email       = $_POST['email'];
-$phone       = $_GET['phone'];
+$phone       = $_POST['phone'];
 $workshop_id = $_POST['workshop_id'];
 $seats       = $_POST['seats'];
 
