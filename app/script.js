@@ -17,8 +17,13 @@ document.getElementById("regForm").addEventListener("submit", function (e) {
   xhr.open("POST", "submit.php", true);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4 && xhr.status === 200) {
+ xhr.onreadystatechange = function () {
+  if (xhr.readyState !== 4) {
+    return;
+  }
+
+  if (xhr.status === 200) {
+    try {
       var data = JSON.parse(xhr.responseText);
 
       if (data.success) {
@@ -36,8 +41,15 @@ document.getElementById("regForm").addEventListener("submit", function (e) {
 
         msg.className = "error";
       }
+    } catch (error) {
+      msg.textContent = "Invalid response from server.";
+      msg.className = "error";
     }
-  };
+  } else {
+    msg.textContent = "Server error. Please try again.";
+    msg.className = "error";
+  }
+};
 
   xhr.send(params.toString());
 });
